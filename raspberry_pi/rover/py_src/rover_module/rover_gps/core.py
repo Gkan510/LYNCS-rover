@@ -8,7 +8,6 @@ from math import sin
 from math import cos
 from math import tan
 
-
 def lat_long_reader(sentence):
     """
     sentenceから緯度経度を取得する。
@@ -40,7 +39,7 @@ def velocity_reader(sentence):
     
     Notes
     -----
-    speedの単位はknot, courseの単位は度である。
+    speedの単位はknot, courseの単位は度。
     """
     msg = pynmea2.parse(sentence)
     speed = None
@@ -161,3 +160,62 @@ def r_theta_to_goal(goal_lat, goal_long):
     else:
         return convert_lat_long_to_r_theta(
             current_coordinate[0], current_coordinate[1], goal_lat, goal_long)
+
+
+lat_0, long_0 = [0.0, 0.0]
+
+
+def init_coordinate():
+    """
+    呼び出された時点の座標を初期位置と設定する。
+
+    Notes
+    -----
+    初期位置はlat_0, long_0
+    """
+    while True:
+        lat_long = lat_long_measurement()
+        if lat_long is not None:
+            lat_0, long_0 = lat_long
+            break
+
+
+def descartes_coordinate():
+    """
+    初期位置を基準とした相対座標を取得する。
+
+    Returns
+    -------p 
+    list : list of float
+        x, yのリスト。取得できなかった場合はNoneを返す。 
+    
+    Notes
+    -----
+    単位はm。
+    """
+    lat_long = lat_long_measurement()
+    if lat_long is None:
+        return None
+    else:
+        r, theta = convert_lat_long_to_r_theta(lat_0, long_0, , long1)
+        return [r*sin(theta),r*cos(theta)]
+
+
+def descartes velocitty:
+    """
+    初期位置を基準とした速度を取得する。
+
+    Returns
+    -------
+    list : list of float
+        x, yのリスト。取得できなかった場合はNoneを返す。 
+    
+    Notes
+    -----
+    単位はm。
+    """
+    v = velocity_measurement()
+    if v is None:
+        return None
+    else:
+        return [v[0]*0.514 444*sin(v[1]),v[0]*0.514 444*sin(v[1])]
